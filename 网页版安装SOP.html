@@ -1,0 +1,363 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>爆款雷达 · 网页版安装 SOP</title>
+<style>
+  :root{
+    --gold:#F7C633; --gold-bg:#FBEFC4; --gold-dark:#C9991F;
+    --ink:#1D1D1F; --body:#3A3A3C; --mute:#86868B;
+    --surface:#F5F5F7; --paper:#FFFFFF; --line:#E5E5EA;
+    --red:#C0392B; --red-bg:#FBEDEC; --green:#2D8A4E; --green-bg:#E9F5EE;
+    --hero:#000000; --hero-ink:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#F5F5F7; --body:#D1D1D6; --mute:#98989D;
+      --surface:#1E1E21; --paper:#141416; --line:#2C2C2E;
+      --gold-bg:#3A3213; --red-bg:#3A1F1C; --green-bg:#1B2E22;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#F5F5F7; --body:#D1D1D6; --mute:#98989D;
+    --surface:#1E1E21; --paper:#141416; --line:#2C2C2E;
+    --gold-bg:#3A3213; --red-bg:#3A1F1C; --green-bg:#1B2E22;
+  }
+  :root[data-theme="light"]{
+    --ink:#1D1D1F; --body:#3A3A3C; --mute:#86868B;
+    --surface:#F5F5F7; --paper:#FFFFFF; --line:#E5E5EA;
+    --gold-bg:#FBEFC4; --red-bg:#FBEDEC; --green-bg:#E9F5EE;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--paper); color:var(--body);
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;
+    font-size:16px; line-height:1.75;}
+  code,.mono{font-family:"Courier New",monospace}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px}
+
+  .hero{background:var(--hero); color:var(--hero-ink); padding:66px 0 58px; text-align:center}
+  .kicker{color:var(--gold); font-size:13px; font-weight:700; letter-spacing:.32em; text-transform:uppercase}
+  .hero h1{font-size:48px; margin:14px 0 10px; letter-spacing:.02em; text-wrap:balance; color:var(--hero-ink)}
+  .hero p{color:#98989D; margin:0; font-size:17px}
+  .hero .zero{display:inline-block; margin-top:16px; background:rgba(247,198,51,.14); color:var(--gold);
+    border:1px solid rgba(247,198,51,.35); border-radius:999px; padding:5px 16px; font-size:14px; font-weight:700}
+
+  section{padding:48px 0 8px}
+  .eyebrow{color:var(--gold-dark); font-size:12.5px; font-weight:700; letter-spacing:.3em}
+  h2{color:var(--ink); font-size:27px; margin:6px 0 16px; text-wrap:balance}
+  p{margin:10px 0}
+  hr{border:0; border-top:1px solid var(--line); margin:42px 0 0}
+
+  .step-head{display:flex; align-items:center; gap:14px; margin-bottom:6px}
+  .step-num{flex:0 0 44px; width:44px; height:44px; border-radius:50%;
+    background:var(--gold); color:#1D1D1F; font-weight:700; font-size:20px;
+    display:flex; align-items:center; justify-content:center;}
+  .step-head .t{color:var(--ink); font-size:23px; font-weight:700}
+  .step-head .place{margin-left:auto; color:var(--mute); font-size:12.5px; white-space:nowrap;
+    background:var(--surface); border-radius:999px; padding:4px 12px}
+
+  ol{padding-left:22px; margin:14px 0}
+  ol li{margin:9px 0}
+  li::marker{color:var(--gold-dark); font-weight:700}
+  b.hl{color:var(--ink)}
+  .say{background:var(--gold); color:#1D1D1F; border-radius:10px; padding:6px 14px; font-weight:700;
+    display:inline-block; margin:2px 0}
+
+  .metaphor{background:var(--gold-bg); border-radius:12px; padding:13px 20px; margin:18px 0; font-size:14.5px}
+  .metaphor b{color:var(--gold-dark)}
+  .warn{background:var(--red-bg); border-radius:12px; padding:13px 20px; margin:16px 0; font-size:14.5px}
+  .warn b{color:var(--red)}
+  .ok{background:var(--green-bg); border-radius:12px; padding:13px 20px; margin:16px 0; font-size:14.5px}
+  .ok b{color:var(--green)}
+
+  .sqlbox{position:relative; background:var(--surface); border:1px solid var(--line); border-radius:12px; margin:16px 0; overflow:hidden}
+  .sqlbox .sqlhead{display:flex; align-items:center; gap:8px; background:var(--paper); border-bottom:1px solid var(--line); padding:8px 14px; font-size:12px; color:var(--mute); font-weight:700; letter-spacing:.06em}
+  .sqlbox pre{margin:0; padding:16px 18px; overflow-x:auto; font-family:"Courier New",monospace; font-size:12.5px; line-height:1.7; color:var(--ink); white-space:pre}
+  .sqlbox .cmt{color:var(--mute)}
+  .sqlbox .lock{color:var(--red); font-weight:700}
+  .sqlbox .edit{background:var(--gold); color:#1D1D1F; font-weight:700; border-radius:4px; padding:0 4px}
+
+  table{width:100%; border-collapse:collapse; margin:16px 0; font-size:14.5px}
+  th{color:var(--mute); font-size:12px; font-weight:700; letter-spacing:.1em; text-align:left; padding:9px 12px; border-bottom:1px solid var(--line)}
+  td{padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+  td:first-child{color:var(--ink); font-weight:700; white-space:nowrap}
+  td code{background:var(--surface); border-radius:5px; padding:1px 7px; font-size:13px}
+  .num{font-variant-numeric:tabular-nums}
+  .tag{display:inline-block; border-radius:20px; padding:1px 11px; font-size:12px; font-weight:700; white-space:nowrap}
+  .tag.free{background:var(--green-bg); color:var(--green)}
+  .tag.paid{background:var(--gold-bg); color:var(--gold-dark)}
+
+  .window{border:1px solid var(--line); border-radius:14px; margin:18px 0; overflow:hidden; background:var(--paper)}
+  .bar{display:flex; align-items:center; gap:7px; background:var(--surface); border-bottom:1px solid var(--line); padding:9px 14px}
+  .dot{width:11px; height:11px; border-radius:50%}
+  .bar .addr{margin-left:8px; color:var(--mute); font-size:12px}
+  .win-body{padding:20px; display:flex; flex-direction:column; align-items:center; gap:14px}
+  .repo-line{align-self:stretch; display:flex; align-items:center; gap:10px; color:var(--mute); font-size:13px}
+  .repo-line .mono{color:var(--ink)}
+  .use-btn{background:#2D8A4E; color:#fff; font-weight:700; font-size:15px; border-radius:8px; padding:11px 22px}
+  .caret{color:var(--mute); font-size:13px}
+
+  .kv{align-self:stretch; display:grid; grid-template-columns:auto 1fr; gap:10px 14px; align-items:center; padding:4px 0}
+  .kv .k{color:var(--ink); font-weight:700; font-size:13.5px; font-family:"Courier New",monospace; white-space:nowrap}
+  .kv .v{background:var(--surface); border-radius:9px; padding:7px 13px; font-size:13px; color:var(--mute)}
+
+  .pages{align-self:stretch; display:flex; flex-direction:column; gap:10px}
+  .field{display:flex; align-items:center; gap:12px; font-size:13.5px}
+  .field .lbl{color:var(--mute); width:80px; flex:0 0 auto}
+  .pick{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:7px 14px; color:var(--ink); font-weight:600; font-size:13px}
+
+  ul.check{list-style:none; padding:0; margin:14px 0}
+  ul.check li{padding:8px 0 8px 34px; position:relative; border-bottom:1px solid var(--line)}
+  ul.check li::before{content:"✓"; position:absolute; left:2px; top:8px;
+    width:22px; height:22px; border-radius:50%; background:var(--green-bg); color:var(--green);
+    font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+
+  .foot{color:var(--mute); font-size:13px; text-align:center; padding:40px 0 56px}
+  @media (max-width:560px){ .hero h1{font-size:36px} .step-head .place{display:none} }
+</style>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="kicker">InfiniteSales AI · 网页版</div>
+    <h1>爆款雷达 · 安装 SOP</h1>
+    <p>点一个按钮复制模板,全程网页操作</p>
+    <div class="zero">✋ 零终端 · 不用打任何指令</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <div class="eyebrow">开始前</div>
+  <h2>准备 3 个账号(建议课前先建好)</h2>
+  <table>
+    <thead><tr><th>账号</th><th>用途</th><th>费用</th></tr></thead>
+    <tbody>
+      <tr><td>GitHub</td><td>存代码 + 每周自动运行</td><td><span class="tag free">免费</span></td></tr>
+      <tr><td>Supabase</td><td>数据库(注册时选 Continue with GitHub 最快)</td><td><span class="tag free">免费</span></td></tr>
+      <tr><td>Apify</td><td>负责抓 IG 数据</td><td><span class="tag paid num">~$5/月</span></td></tr>
+    </tbody>
+  </table>
+  <p style="color:var(--mute); font-size:14.5px">模板地址(老师会发给你):<code class="mono">github.com/alvinokk/viral-radar-template</code></p>
+</section>
+
+<hr>
+
+<section>
+  <div class="step-head"><div class="step-num">1</div><div class="t">复制模板到你的账号</div><div class="place">在 GitHub</div></div>
+  <ol>
+    <li>打开老师发的模板地址</li>
+    <li>点右上角绿色按钮 <span class="say">Use this template</span> → Create a new repository</li>
+    <li>Repository name 填你想要的名字(例:<code>my-viral-radar</code>)</li>
+    <li>选 <b class="hl">Public</b> → 点 Create repository</li>
+  </ol>
+  <div class="window">
+    <div class="bar"><span class="dot" style="background:#C0392B"></span><span class="dot" style="background:#F7C633"></span><span class="dot" style="background:#2D8A4E"></span><span class="addr mono">github.com/alvinokk/viral-radar-template</span></div>
+    <div class="win-body">
+      <div class="repo-line"><span>📦</span><span class="mono">viral-radar-template</span><span style="margin-left:auto" class="use-btn">Use this template ▾</span></div>
+    </div>
+  </div>
+  <div class="metaphor"><b>比喻</b> 像复制一份 Notion 模板到自己账号——点一下,就有了自己的一份。</div>
+</section>
+
+<hr>
+
+<section>
+  <div class="step-head"><div class="step-num">2</div><div class="t">建数据库,贴一段 SQL</div><div class="place">在 Supabase</div></div>
+
+  <p style="margin-top:8px"><b class="hl">A · 建 Supabase 项目</b></p>
+  <ol>
+    <li>supabase.com → <b class="hl">New project</b>(Region 选 <b class="hl">Singapore</b>,数据库密码自己存好)</li>
+    <li>左边点 <b class="hl">SQL Editor</b> → New query</li>
+  </ol>
+
+  <p style="margin-top:18px"><b class="hl">B · 复制下面整段 SQL,粘贴进去</b></p>
+  <p style="font-size:14px; color:var(--mute)">整段复制 → 贴进 SQL Editor。<b class="hl">只改最底下 3 行</b>(黄底那几行)换成你的竞对,上面一个字都别动。</p>
+  <div class="sqlbox">
+    <div class="sqlhead">📄 schema.sql &nbsp;·&nbsp; 整段复制</div>
+    <pre><span class="cmt">-- 爆款雷达 · Supabase 建表(可重复跑,会先删旧表重建)</span>
+
+drop table if exists posts cascade;
+drop table if exists competitors cascade;
+
+<span class="cmt">-- 爆款帖子</span>
+create table posts (
+  id              bigint generated always as identity primary key,
+  post_id         text unique not null,
+  tracker         text not null default 'IG',
+  competitor      text,
+  caption         text,
+  transcript      text,
+  ai_breakdown    text,
+  post_type       text,
+  likes           integer default 0,
+  comments        integer default 0,
+  followers       integer default 0,
+  engagement_rate numeric generated always as
+      ((likes + comments)::numeric / nullif(followers, 0)) stored,
+  viral_score     numeric generated always as
+      (round((greatest(likes,0) + comments*3)::numeric / nullif(followers,0) * 100, 2)) stored,
+  post_date       date,
+  post_url        text,
+  thumbnail_url   text,
+  video_url       text,
+  hashtags        text,
+  is_video        boolean default false,
+  status          text default '未处理',
+  last_synced     date,
+  created_at      timestamptz default now()
+);
+
+create index posts_status_idx on posts (status);
+create index posts_score_idx  on posts (viral_score desc);
+
+<span class="cmt">-- 竞对名单</span>
+create table competitors (
+  id         bigint generated always as identity primary key,
+  username   text not null,
+  tracker    text not null default 'IG',
+  active     boolean default true,
+  notes      text,
+  created_at timestamptz default now()
+);
+
+<span class="lock">-- ========= 安全锁(别删!公开钥匙只能读帖子 + 改 status 一列)=========</span>
+alter table posts       enable row level security;
+alter table competitors enable row level security;
+
+revoke all on posts       from anon;
+revoke all on competitors from anon;
+
+grant select on posts to anon;
+grant update (status) on posts to anon;
+
+drop policy if exists "anon read posts"    on posts;
+drop policy if exists "anon update status" on posts;
+create policy "anon read posts"    on posts for select to anon using (true);
+create policy "anon update status" on posts for update to anon using (true) with check (true);
+
+<span class="cmt">-- ↓↓↓ 只改这 3 行:换成你的竞对 IG 账号(纯账号名,不要 @,不要链接)↓↓↓</span>
+insert into competitors (username, tracker, active) values
+  (<span class="edit">'这里换成竞对1'</span>, 'IG', true),
+  (<span class="edit">'这里换成竞对2'</span>, 'IG', true),
+  (<span class="edit">'这里换成竞对3'</span>, 'IG', true);</pre>
+  </div>
+
+  <p style="margin-top:18px"><b class="hl">C · 改竞对 → Run → 确认</b></p>
+  <ol>
+    <li>把最底下 <b class="hl">黄底那 3 行</b>的「这里换成竞对1/2/3」换成你的竞对 IG <b class="hl">账号名</b>(要几个加几行)</li>
+    <li>点 <b class="hl">Run</b>,看到 Success</li>
+    <li>左边点 <b class="hl">Table Editor</b>,确认 <code>posts</code> 和 <code>competitors</code> 两张表都在,competitors 里是你填的竞对</li>
+  </ol>
+  <div class="warn"><b>只改黄底那 3 行,上面一律别动</b> 上面那一大段有安全锁——保证公开钥匙只能读数据、改状态,删不掉你的数据。删了或改了,别人拿到网址就能删光你的东西。</div>
+  <div class="warn"><b>装好后别再重跑这段 SQL</b> 开头有一句"先删表重建",第一次装没事;但等抓到爆款之后再跑一次,会把数据<b>清空</b>。以后加/停竞对去 Table Editor 改,别回来重跑 SQL。</div>
+</section>
+
+<hr>
+
+<section>
+  <div class="step-head"><div class="step-num">3</div><div class="t">复制 3 把钥匙</div><div class="place">在 Supabase</div></div>
+  <p>左下角 <b class="hl">Project Settings → API</b>,复制三样(先放记事本):</p>
+  <table>
+    <tbody>
+      <tr><td>Project URL</td><td><code class="mono">https://xxxx.supabase.co</code></td></tr>
+      <tr><td>anon public key</td><td>一长串</td></tr>
+      <tr><td>service_role key</td><td>一长串(<b class="hl">私密</b>,下一步只进 Secrets)</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><b>⚠️ 最容易错的一步</b> Project URL 一定是 <code class="mono">https://xxxx.supabase.co</code> 这种。<b>不要</b>复制你浏览器地址栏那个 <code class="mono">supabase.com/dashboard/project/...</code> —— 那是后台页面网址,填错了抓取会直接失败。</div>
+</section>
+
+<hr>
+
+<section>
+  <div class="step-head"><div class="step-num">4</div><div class="t">填钥匙和名字</div><div class="place">在你的仓库</div></div>
+  <p>你的仓库 → <b class="hl">Settings</b> → Secrets and variables → <b class="hl">Actions</b>。</p>
+  <p style="margin-top:14px"><b class="hl">① 点 Secrets 分页</b>,New repository secret,加这 4 个(名字一模一样):</p>
+  <div class="window">
+    <div class="bar"><span class="dot" style="background:#C0392B"></span><span class="dot" style="background:#F7C633"></span><span class="dot" style="background:#2D8A4E"></span><span class="addr mono">Settings · Secrets</span></div>
+    <div class="win-body"><div class="kv">
+      <span class="k">SUPABASE_URL</span><span class="v">第 3 步的 Project URL</span>
+      <span class="k">SUPABASE_ANON_KEY</span><span class="v">第 3 步的 anon key</span>
+      <span class="k">SUPABASE_SERVICE_ROLE_KEY</span><span class="v">第 3 步的 service_role key</span>
+      <span class="k">APIFY_TOKEN</span><span class="v">Apify → Settings → API 里的 token</span>
+    </div></div>
+  </div>
+  <p><b class="hl">② 点 Variables 分页</b>,New repository variable,加这 3 个:</p>
+  <div class="window">
+    <div class="bar"><span class="dot" style="background:#C0392B"></span><span class="dot" style="background:#F7C633"></span><span class="dot" style="background:#2D8A4E"></span><span class="addr mono">Settings · Variables</span></div>
+    <div class="win-body"><div class="kv">
+      <span class="k">BRAND</span><span class="v">系统名字,例:Yoga Radar</span>
+      <span class="k">NICHE</span><span class="v">你的领域,例:瑜伽教练课程</span>
+      <span class="k">SYNC_DAY</span><span class="v">填一个真的星期,例:每周一</span>
+    </div></div>
+  </div>
+  <div class="warn"><b>⚠️ 注意 SYNC_DAY</b> 值要填「每周一」这种真的星期,<b>别把名字 <code class="mono">SYNC_DAY</code> 又填进去</b>——填错了网页页脚会显示怪字。</div>
+  <div class="ok"><b>放心贴</b> 贴进网页输入框不会像终端那样贴烂——这是网页版最省心的地方。</div>
+</section>
+
+<hr>
+
+<section>
+  <div class="step-head"><div class="step-num">5</div><div class="t">开网页(Pages)</div><div class="place">在你的仓库</div></div>
+  <p>你的仓库 → <b class="hl">Settings</b> → 左边 <b class="hl">Pages</b>:</p>
+  <div class="window">
+    <div class="bar"><span class="dot" style="background:#C0392B"></span><span class="dot" style="background:#F7C633"></span><span class="dot" style="background:#2D8A4E"></span><span class="addr mono">Settings · Pages</span></div>
+    <div class="win-body"><div class="pages">
+      <div class="field"><span class="lbl">Source</span><span class="pick">Deploy from a branch</span></div>
+      <div class="field"><span class="lbl">Branch</span><span class="pick">main</span><span class="pick">/docs</span><span class="pick" style="background:var(--gold); color:#1D1D1F">Save</span></div>
+    </div></div>
+  </div>
+  <p style="color:var(--mute); font-size:14px">现在 docs/ 还没生成没关系,先这样设着,跑完第 6 步网页就出来。</p>
+</section>
+
+<hr>
+
+<section>
+  <div class="step-head"><div class="step-num">6</div><div class="t">首次运行</div><div class="place">在你的仓库</div></div>
+  <ol>
+    <li>你的仓库 → <b class="hl">Actions</b> 分页,若有提示点 <b class="hl">I understand my workflows, enable them</b></li>
+    <li>左边点 <b class="hl">Sync Content</b> → 右边 <b class="hl">Run workflow</b> → 绿色 Run workflow</li>
+    <li>之后自动接力:转录 → AI 拆解 → 生成网页。首跑约 <b class="hl">20-60 分钟</b>,去忙别的</li>
+    <li>跑完打开:<code class="mono">https://你的用户名.github.io/仓库名/</code></li>
+  </ol>
+  <ul class="check">
+    <li>网页打得开,有爆款卡片</li>
+    <li>点卡片能播放视频、看口播稿和 AI 拆解</li>
+    <li>拖一张卡到「拍摄中」,出现绿色 ✓(手机也能操作,不用密码)</li>
+  </ul>
+  <div class="metaphor"><b>比喻</b> 电饭煲按下去就走开——网页好了自然在,不用盯着。</div>
+</section>
+
+<hr>
+
+<section>
+  <div class="eyebrow">装好之后</div>
+  <h2>每周只做三件事</h2>
+  <ol>
+    <li>每周一打开网页,新爆款自动排好队,带口播稿和 AI 拆解</li>
+    <li>想拍的拖到「拍摄中」,拍完拖「已处理」。团队打开都是同一个看板</li>
+    <li>加/停竞对:Supabase → Table Editor → competitors 表加行(active 打勾)或取消勾</li>
+  </ol>
+</section>
+
+<hr>
+
+<section>
+  <div class="eyebrow">卡住了 / 红线</div>
+  <h2>速查</h2>
+  <table>
+    <thead><tr><th>现象</th><th>怎么办</th></tr></thead>
+    <tbody>
+      <tr><td>网页 404</td><td>先等首跑完整结束;再看 Actions 有没有红色失败的</td></tr>
+      <tr><td>抓到 0 条</td><td>competitors 表账号拼错 / active 没勾</td></tr>
+      <tr><td>标题还是「爆款雷达」</td><td>Variables 的 BRAND 没设,设好后重跑 Deploy Dashboard</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><b>红线 1</b> service_role key 只进 Secrets,不要贴别处或发群</div>
+  <div class="warn"><b>红线 2</b> 仓库是 Public,竞对数据和 AI 拆解任何人拿到链接都能看,介意就别用免费版</div>
+  <div class="warn"><b>红线 3</b> schema.sql 里的安全锁那段不要删</div>
+  <p style="margin-top:16px"><b class="hl">费用:</b><span class="num">只有 Apify ~$5/月,其余全免费。</span></p>
+</section>
+
+<div class="foot">InfiniteSales AI · 爆款雷达网页版安装 SOP · 有问题把截图发到学员群</div>
+
+</div>
