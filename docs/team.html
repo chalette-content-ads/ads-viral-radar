@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>工作台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0d13; --card:#11151d; --card-hi:#151a24; --border:#1d2430; --border-hi:#2c3546;
+    --text:#e8ecf3; --muted:#8a94a6; --faint:#5b6577; --accent:#5ea1ff; --green:#3fd68f;
+    --orange:#f0a33f; --pink:#ff6b9d; --red:#ff5c5c; --fire1:#ff8a3d; --fire2:#ff4d6d;
+    --font:'Inter',-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    --disp:'Space Grotesk','Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:var(--font); -webkit-font-smoothing:antialiased; }
+  ::selection { background:rgba(94,161,255,.3); }
+  ::-webkit-scrollbar { width:10px; } ::-webkit-scrollbar-thumb { background:#232c3b; border-radius:8px; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:6px; }
+  .ic { width:14px; height:14px; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; fill:none; flex:none; }
+
+  header { position:sticky; top:0; z-index:50; background:rgba(10,13,19,.86);
+    backdrop-filter:blur(14px); border-bottom:1px solid var(--border); padding:13px 20px; }
+  .hrow { display:flex; flex-wrap:wrap; gap:10px; align-items:center; max-width:1200px; margin:0 auto; }
+  .brand { display:flex; align-items:center; gap:10px; margin-right:auto; }
+  .mark { width:31px; height:31px; border-radius:9px; display:grid; place-items:center;
+    background:linear-gradient(135deg,var(--fire1),var(--fire2)); box-shadow:0 4px 16px rgba(255,92,80,.35); }
+  .mark .ic { width:17px; height:17px; color:#fff; }
+  h1 { font-family:var(--disp); font-size:16.5px; font-weight:700; line-height:1.15; }
+  h1 small { display:block; color:var(--faint); font-family:var(--font); font-weight:400; font-size:10.5px; }
+  .me { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); cursor:pointer;
+    background:var(--card); border:1px solid var(--border); border-radius:10px; padding:7px 12px;
+    transition:border-color .18s; }
+  .me:hover { border-color:var(--border-hi); }
+  .me b { color:var(--text); }
+
+  nav { display:flex; gap:7px; max-width:1200px; margin:12px auto 0; flex-wrap:wrap; }
+  .ntab { display:inline-flex; align-items:center; gap:7px; background:var(--card);
+    border:1px solid var(--border); border-radius:999px; padding:7px 16px; font-size:13.5px;
+    color:var(--muted); cursor:pointer; user-select:none; transition:all .18s; }
+  .ntab:hover { border-color:var(--border-hi); color:var(--text); }
+  .ntab.on { color:var(--text); background:linear-gradient(135deg,rgba(255,138,61,.15),rgba(255,77,109,.15));
+    border-color:rgba(255,120,90,.45); }
+
+  main { max-width:1200px; margin:22px auto; padding:0 20px; }
+  .page { display:none; } .page.on { display:block; }
+
+  .stats { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  .stat { flex:1; min-width:130px; background:var(--card); border:1px solid var(--border);
+    border-radius:14px; padding:14px 16px; }
+  .stat .v { font-family:var(--disp); font-size:26px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .stat .l { color:var(--faint); font-size:12px; margin-top:2px; }
+  .stat.sh .v { color:var(--orange); } .stat.dn .v { color:var(--green); } .stat.pd .v { color:var(--accent); }
+
+  section { background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:16px 18px; margin-bottom:16px; }
+  section h2 { font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  section h2 .ic { color:var(--orange); }
+  section h2 small { color:var(--faint); font-weight:400; font-size:11.5px; margin-left:auto; }
+  .row { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--border);
+    font-size:13px; flex-wrap:wrap; }
+  .row .hookline { flex:1; min-width:200px; color:var(--text); overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; }
+  .row .hookline small { color:var(--faint); display:block; font-size:11px; margin-top:1px; }
+  .row .who2 { color:var(--accent); text-decoration:none; font-weight:600; font-size:12px; white-space:nowrap; }
+  .xb { font-family:var(--disp); font-weight:600; font-size:11px; color:var(--orange);
+    border:1px solid rgba(240,163,63,.4); background:rgba(240,163,63,.07); border-radius:99px;
+    padding:2px 8px; white-space:nowrap; }
+  .pill { display:inline-flex; align-items:center; gap:4px; background:#0c0f16; color:var(--muted);
+    border:1px solid var(--border); border-radius:9px; padding:5.5px 10px; font-size:11.5px;
+    cursor:pointer; text-decoration:none; font-family:var(--font); transition:all .18s; white-space:nowrap; }
+  .pill .ic { width:11px; height:11px; }
+  .pill:hover { color:var(--accent); border-color:rgba(94,161,255,.5); }
+  .pill.ok:hover { color:var(--green); border-color:rgba(63,214,143,.5); }
+  .pill.bad:hover { color:var(--red); border-color:rgba(255,92,92,.5); }
+  .none { color:var(--faint); font-size:13px; padding:14px 0 6px; }
+
+  .act { display:flex; gap:9px; padding:7px 0; border-top:1px solid var(--border);
+    font-size:12.5px; color:var(--muted); }
+  .act time { color:var(--faint); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .act b { color:var(--text); font-weight:600; }
+  .act .to { color:var(--orange); }
+
+  #radarWrap { height:calc(100vh - 150px); min-height:500px; border:1px solid var(--border);
+    border-radius:16px; overflow:hidden; }
+  #radarWrap iframe { width:100%; height:100%; border:0; }
+
+  .sop { max-width:820px; }
+  .sop h3 { font-size:15px; margin:22px 0 10px; display:flex; gap:8px; align-items:center; }
+  .sop h3 .ic { color:var(--orange); }
+  .sop ol { margin:0 0 8px 22px; color:var(--muted); font-size:13.5px; line-height:1.9; }
+  .sop ol b { color:var(--text); }
+  .sop p { color:var(--muted); font-size:13px; line-height:1.7; margin-bottom:6px; }
+  .sop table { border-collapse:collapse; font-size:13px; margin:8px 0; }
+  .sop td, .sop th { border:1px solid var(--border); padding:7px 14px; color:var(--muted); }
+  .sop th { color:var(--text); background:var(--card-hi); }
+
+  #mission { border:1px solid rgba(255,120,90,.35); border-radius:16px; padding:15px 18px;
+    margin-bottom:14px; background:linear-gradient(135deg,rgba(255,138,61,.10),rgba(255,77,109,.10)); }
+  #mission .mt { font-weight:600; font-size:14px; display:flex; gap:8px; align-items:center; }
+  #mission .mt .ic { color:var(--orange); }
+  #mission .md { color:var(--muted); font-size:12.5px; margin-top:5px; line-height:1.6; }
+  #mission .md b { color:var(--text); font-family:var(--disp); }
+  #overlay { position:fixed; inset:0; background:rgba(6,8,12,.88); backdrop-filter:blur(6px);
+    z-index:200; display:none; place-items:center; }
+  #overlay.show { display:grid; }
+  .obox { background:var(--card); border:1px solid var(--border-hi); border-radius:18px;
+    padding:28px 30px; width:min(92vw,380px); }
+  .obox h2 { font-family:var(--disp); font-size:18px; margin-bottom:6px; }
+  .obox p { color:var(--muted); font-size:13px; margin-bottom:16px; }
+  .obox input, .obox select { width:100%; background:#0c0f16; color:var(--text);
+    border:1px solid var(--border); border-radius:10px; padding:10px 13px; font-size:14px;
+    font-family:var(--font); margin-bottom:11px; }
+  .obox input:focus, .obox select:focus { border-color:var(--accent); outline:none; }
+  .obox button { width:100%; background:linear-gradient(135deg,var(--fire1),var(--fire2));
+    color:#fff; border:0; border-radius:10px; padding:11px; font-size:14px; font-weight:600;
+    font-family:var(--font); cursor:pointer; }
+  .obox button:active { transform:scale(.98); }
+
+  #toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(8px);
+    background:var(--card-hi); border:1px solid var(--border-hi); border-radius:11px;
+    padding:11px 20px; font-size:13px; display:none; z-index:300; opacity:0;
+    box-shadow:0 12px 32px rgba(0,0,0,.5); transition:opacity .2s, transform .2s; }
+  #toast.show { display:block; opacity:1; transform:translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important; transition:none!important; } }
+</style>
+</head>
+<body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><path d="m10 8 6 4-6 4Z"/><rect x="2" y="4" width="20" height="16" rx="3"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol id="i-radar" viewBox="0 0 24 24"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"/><path d="M4 6h.01"/><path d="M2.29 9.62A10 10 0 1 0 21.31 8.35"/><path d="M16.24 7.76A6 6 0 1 0 8.23 16.67"/><path d="M12 18h.01"/><path d="M17.99 11.66A6 6 0 0 1 15.77 16.67"/><circle cx="12" cy="12" r="2"/><path d="m13.41 10.59 5.66-5.66"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+</svg>
+<header>
+  <div class="hrow">
+    <div class="brand">
+      <div class="mark"><svg class="ic"><use href="#i-flame"/></svg></div>
+      <h1>工作台<small id="updated"></small></h1>
+    </div>
+    <div class="me" id="meBtn" title="点击修改身份">
+      <svg class="ic"><use href="#i-user"/></svg><span id="meLabel">未登记</span>
+    </div>
+  </div>
+  <nav>
+    <div class="ntab on" data-p="work"><svg class="ic"><use href="#i-clock"/></svg>今日工作</div>
+    <div class="ntab" data-p="radar"><svg class="ic"><use href="#i-radar"/></svg>爆款雷达</div>
+    <div class="ntab" data-p="sop"><svg class="ic"><use href="#i-book"/></svg>SOP</div>
+  </nav>
+</header>
+<main>
+  <div class="page on" id="p-work">
+    <div id="mission"></div>
+    <div class="stats">
+      <div class="stat pd"><div class="v" id="stPending">–</div><div class="l">未处理(待挑选)</div></div>
+      <div class="stat sh"><div class="v" id="stShoot">–</div><div class="l">拍摄中</div></div>
+      <div class="stat dn"><div class="v" id="stDone">–</div><div class="l">已处理</div></div>
+    </div>
+    <section id="secShoot">
+      <h2><svg class="ic"><use href="#i-video"/></svg>拍摄中队列<small>做完一条,点「完成」</small></h2>
+      <div id="shootList"></div>
+    </section>
+    <section id="secPick">
+      <h2><svg class="ic"><use href="#i-flame"/></svg>本周待挑选爆款 Top 8<small>看中就点「选中拍摄」,细看去爆款雷达</small></h2>
+      <div id="pickList"></div>
+    </section>
+  </div>
+  <div class="page" id="p-radar"><div id="radarWrap"></div></div>
+  <div class="page sop" id="p-sop">
+    <section>
+      <h3><svg class="ic"><use href="#i-flame"/></svg>SOP-01 · Marketer 每周选题流程(周一,约30分钟)</h3>
+      <ol>
+        <li>打开<b>爆款雷达</b>,点快筛「<b>真爆款 ×2+</b>」+「<b>近7天</b>」</li>
+        <li>看「爆款热词」确认本周主题方向(热词越多的主题越优先)</li>
+        <li>挑 <b>3–5 条</b>适合改编的。标准:话题跟我们相关 / Hook 可复制 / 我们拍得出来</li>
+        <li>每条点「<b>Brief</b>」复制 → 发到拍摄群</li>
+        <li>把选中的卡片<b>拖到「拍摄中」</b></li>
+        <li>明显不适合的拖「跳过」,保持未处理越少越好</li>
+      </ol>
+    </section>
+    <section>
+      <h3><svg class="ic"><use href="#i-video"/></svg>SOP-02 · Content Creator 拍摄改编流程(每条 ≤1天)</h3>
+      <ol>
+        <li>打开工作台「<b>今日工作</b>」,看拍摄中队列,从最旧的开始</li>
+        <li>打开原帖看 <b>3 遍</b>:第1遍看整体 / 第2遍拆 Hook(前3秒为什么让人停下) / 第3遍记结构(几个镜头、什么节奏)</li>
+        <li><b>改编不照抄</b>:换成我们的案例、口吻、行业。保留结构,替换内容</li>
+        <li>拍摄 → 剪辑。<b>前3秒必须有钩子</b>,字幕开头即出</li>
+        <li>发布后回到工作台,该条点「<b>完成</b>」</li>
+      </ol>
+    </section>
+    <section>
+      <h3><svg class="ic"><use href="#i-book"/></svg>SOP-03 · 状态定义(团队统一语言)</h3>
+      <table>
+        <tr><th>状态</th><th>意思</th><th>谁负责改</th></tr>
+        <tr><td>未处理</td><td>还没人筛选过</td><td>Marketer 每周清理</td></tr>
+        <tr><td>拍摄中</td><td>已选中,正在改编/拍摄/剪辑</td><td>Marketer 选中时拖入</td></tr>
+        <tr><td>已处理</td><td>已发布或已完成改编</td><td>Creator 完成时点</td></tr>
+        <tr><td>跳过</td><td>不适合我们,不再考虑</td><td>任何人</td></tr>
+      </table>
+    </section>
+    <section>
+      <h3><svg class="ic"><use href="#i-radar"/></svg>SOP-04 · 看到「引流」标签的帖子怎么学</h3>
+      <p>带「引流」标的帖子,重点<b>不是内容,是漏斗</b>。记录三件事:</p>
+      <ol>
+        <li>留言<b>关键词</b>是什么?(例:留言「Start」)</li>
+        <li>送的<b>诱饵</b>是什么?(模板 / 课程 / 清单)</li>
+        <li>之后导去<b>哪里</b>?(DM 自动回复 → 链接 → 报名页)</li>
+      </ol>
+      <p>好的打法直接抄结构,用我们的 GHL / ManyChat 实现。</p>
+    </section>
+    <section>
+      <h3><svg class="ic"><use href="#i-user"/></svg>SOP-05 · 竞对名单管理(发现好账号就加进来)</h3>
+      <ol>
+        <li>打开 Supabase「<b>competitors</b>」表,加一行</li>
+        <li><b>Username</b>:贴账号名或 IG <b>主页</b>链接都行(带 ?igsh= 参数没关系;不要贴帖子链接)</li>
+        <li><b>Tracker</b>:选 IG Competitors 或 AI Competitors</li>
+        <li><b>Active</b>:打勾✅ — <b>没勾不会抓</b></li>
+        <li>每周一自动生效;停止追踪 = 取消勾,不用删行</li>
+      </ol>
+      <p>加账号的标准:跟我们领域相关 / 内容有爆款相 / 值得学。发现雷达里某账号长期没爆款,把它 Active 取消,腾出额度换新的。</p>
+    </section>
+    <section>
+      <h3><svg class="ic"><use href="#i-user"/></svg>SOP-06 · 第一次设置 & 常见问题</h3>
+      <ol>
+        <li><b>登记身份:</b>第一次打开工作台会弹「你是谁」→ 输名字、选角色。这决定你看到的任务卡和排版</li>
+        <li><b>直接改状态:</b>雷达里把卡片拖到上方分类,或用卡片下拉选。看到绿色 ✓ 就成了。<b>不需要输任何密钥</b> —— 这套系统天生只允许改状态,改不了别的数据,所以安全无需登录</li>
+      </ol>
+      <p><b>常见问题:</b></p>
+      <table>
+        <tr><th>现象</th><th>原因</th><th>解决</th></tr>
+        <tr><td>改了状态没反应 / 报错</td><td>网络断了,或页面是旧版</td><td>刷新页面(Ctrl+Shift+R)再试</td></tr>
+        <tr><td>队友改的状态我看不到</td><td>页面最多 10 分钟同步一次</td><td>刷新页面即可;自己的改动是即时的</td></tr>
+        <tr><td>网页打不开 / 数据是空的</td><td>每周自动更新那天可能还在跑</td><td>等 1 小时后再开;还不行找老板看 GitHub Actions</td></tr>
+      </table>
+      <p>状态存在云端(Supabase),换电脑、关机都不会丢,全团队实时共享。</p>
+    </section>
+  </div>
+</main>
+<div id="overlay"><div class="obox">
+  <h2>👋 你是谁?</h2>
+  <p>登记一次,方便团队知道是谁在操作。</p>
+  <input id="oName" placeholder="你的名字" maxlength="20">
+  <select id="oRole">
+    <option value="Marketer">Marketer(选题/投放)</option>
+    <option value="Content Creator">Content Creator(拍摄/剪辑)</option>
+    <option value="Boss">Boss</option>
+  </select>
+  <button id="oSave">进入工作台</button>
+</div></div>
+<div id="toast"></div>
+<script id="data" type="application/json">[{"id": "DQrFTnrkteK", "tracker": "XHS FB Ads Radar 竞对", "competitor": "ahyu.talk", "caption": "👇🏻 想同時學習文字上的Hook嗎？\n留言「Hook」獲取你的❤️爆紅短影音的100個Hook\n之前領取過的朋友們可以不用再拿了，內容是一樣的！\n\nInspired by @inmenta_digital\n\n—————————————————\n\n[ @ahyu.talk ]\n🍀 數位遊牧生活｜人生不只朝9晚5\n💻 網絡賺錢｜教你創造多元收入\n💡 個人成長｜在旅程中成為最好版本的自己\n.\n❤️‍🔥 這裡教你如何邊工作，邊環遊世界\n\n#數位遊牧 #網絡創業 #線上創業 #數碼遊牧 #個人品牌 #網絡收入", "transcript": "你有沒有發現只要我一直倒水你就會自然想把影片看下去這個現象在心理學中叫Zegarnik Effect人的大腦對於未完成的東西是特別有好奇心的所以當你看到一些未完成的畫面你會自然停下想看下去令到大腦幫你填補未知的部分所以下次當你寫完文字的hook畫面上就可以用未完成的畫面去做了學完畫面上的hook如果你想知道文字的hook怎樣寫就留言hook我準備了100個爆紅的公式給你", "brk": "Hook类型: 痛点直击  \n结构: 观众好奇心 → Zegarnik Effect → 提供解决方案  \n为什么火: 揭示了心理学原理，吸引观众持续观看并互动。  \n改编角度: 可分享在小红书上运用心理学提升内容吸引力的方法。", "tags": "數位遊牧, 網絡創業, 線上創業, 數碼遊牧, 個人品牌, 網絡收入", "bait": true, "type": "Video", "likes": 10567, "comments": 13056, "er": 41.94, "followers": 56328, "date": "2025-11-05", "url": "https://www.instagram.com/p/DQrFTnrkteK/", "video": true, "ratio": 0, "score": 88.3, "status": "未处理", "x": 0}, {"id": "DSoi3N6icxg", "tracker": "XHS FB Ads Radar 竞对", "competitor": "headhomeuni", "caption": "留言「 AI 」，我把 AI 虛擬分身 SOP 和工具連結傳給你！\n\n身為創作者，我認為這是在擴大創作的可能性\n\n想像一下，你只有一個人，但你的 AI 分身可以幫你：\n自動切換語言：用你的聲音說英文\n快速測試想法：不用大費周章拍攝，用素材就能產出內容做測試\n預演拍攝：開拍前先模擬畫面，省下龐大的試錯成本\n\n不用好的設備，不用專業團隊，這只是一個讓我們能更快行動的工具\n而這些，只是 AI 爆發的開始\n\n留言「 AI 」，我傳給你！", "transcript": "這真的太強了有人肯定可以靠這個專銷作用的你現在看到的人不是瑜伽這是由我完全AI生成的虛擬分身我知道你現在在想什麼難道AI要取代我們所有的創作者了嗎我懂 我自己也是創作者但我完全不覺得他在取代創作我覺得他在幫我們放大創作的可能性你先來看真實的內容永遠有他的價值這只是一個就可以讓我們更快速行動的工具而已像是如果你先想要測試一個想法或是你想要在不同的語言市場裡面做在地化的內容那甚至在你開始拍攝花錢以前的你可以先模擬一場拍攝的環境這個操作起來是非常簡單的第一步先上傳一個5-15秒的素材影片再來第二步呢選擇你要的角色他可以是你自己你也可以用他們的角色褲再來第三步複製你的聲音或是用他們內建的配音你甚至呢可以直接切換語言第四步選擇背景那我這次呢是保持原樣然後來按下生成不這個畫面穿那一刻呢 我沒想到這不是瑜伽這是一個真實AI生成的虛擬本身如果你想要自己嘗試做出像這樣的AI內容的話你的留言AI我把工具傳給你這技術真的太狂了而且這個只是剛開始而已", "brk": "Hook类型: 痛点直击  \n结构: 创作者面临效率困境 → AI虚拟分身助力提升产出 → 呼吁留言获取工具  \n为什么火: 触及创作者对效率提升的渴望，并提供实用解决方案。  \n改编角度: 在小红书课程中强调如何利用AI提升内容创作与市场适应性。", "tags": "", "bait": true, "type": "Video", "likes": 16301, "comments": 31314, "er": 26.93, "followers": 176834, "date": "2025-12-24", "url": "https://www.instagram.com/p/DSoi3N6icxg/", "video": true, "ratio": 0, "score": 62.34, "status": "未处理", "x": 1.6}, {"id": "DOppwrsCQ74", "tracker": "XHS FB Ads Radar 竞对", "competitor": "headhomeuni", "caption": "你是不是也想知道\n為什麼有些人的限時動態看的人越來越多\n甚至還會有人主動找他買東西\n而你的限動卻永遠沒人回應？\n\n我把限時動態提示詞整理出來\n用過的人互動率、成交率都翻倍\n留言「 限動 」，我就傳給你", "transcript": "我不允許還有人不知道這件事情現實動態不是讓你拿來發廢文的地方它是拿來賺錢的地方如果你的現實動態沒有讓你帶來更多的客戶名單的話那再發下一篇限動影片你先做這件事情打開你的GPT輸入這段指令幫我生成一份每週的限動行事力格式要用表格每一天兩則一則是拉近和粉絲關係的生活內容另外一則是低調去推廣產品服務型的內容我是一個填入你的職位我的受眾是幾歲到幾歲住哪裡工作是什麼他們想要的結果又是什麼內容要簡單快速執行最好是附上圖片以及開場的鉤子然後你就會得到像是這樣的完整的限動表格該怎麼拍怎麼講甚至怎麼樣下鉤子都幫你想好這樣一來你的限動再也不會只是別想要花掉垃圾訊息而是真正能夠拉近粉絲能夠同時帶動銷售的強大工具如果你想要這個提示詞的話記得留言我私訊傳給你", "brk": "Hook类型: 痛点直击  \n结构: A → 现状无回响的限动 → B → 互动率、成交率翻倍 → C → 提示词分享  \n为什么火: 直接指向用户的痛点，引发共鸣并提供解决方案。  \n改编角度: 针对小红书用户，提供限时动态的实用模板和话题建议。", "tags": "", "bait": true, "type": "Video", "likes": 28760, "comments": 13834, "er": 24.09, "followers": 176834, "date": "2025-09-16", "url": "https://www.instagram.com/p/DOppwrsCQ74/", "video": true, "ratio": 0, "score": 39.73, "status": "未处理", "x": 1.0}, {"id": "DUcDM9VCXfg", "tracker": "XHS FB Ads Radar 竞对", "competitor": "iamchrischung", "caption": "Comment “formula” for the full breakdown so you can just copy", "transcript": "If you've ever wondered, whether other people see color the same way as you, the idea of seeing color huge, Tam, according to current scientific understanding, leverages research for credibility so you listen, the percent chance that anyone else sees color the same way as you is essentially zero. Closes loop. We all see colors differently, and I used to do research on this, so I'll tell you why. Opens new loop. I used to work in a research lab, super hook so you know she's legit, doing something called a quantum cache, the name peaks curiosity, where we would take the genotype of the color detecting cells in different monkey's eyes and then we could map on a color plot how they would perceive fruits in the rainforest. And you could see, she trims all dead space between lines to maximize pace. Humans are the same way. And genetic code is only one reason the color of your eye like brown versus blue can also change how you see color. But the real reason this has 13.7 million views is because she shared a non-obvious take. You got a dopamine hit because you can relate but I've never heard it said that way.", "brk": "Hook类型: 痛点直击  \n结构: 看到颜色的方式 → 研究证据支持 → 个人经历分享  \n为什么火: 挑战观众对颜色认知的常规想法，引发思考。  \n改编角度: 提供小红书课程实际应用案例，让学员分享独特视角引发共鸣。", "tags": "", "bait": true, "type": "Video", "likes": 58002, "comments": 1171, "er": 35.69, "followers": 165795, "date": "2026-02-07", "url": "https://www.instagram.com/p/DUcDM9VCXfg/", "video": true, "ratio": 0, "score": 37.1, "status": "未处理", "x": 0}, {"id": "DGfgQS4TMQF", "tracker": "XHS FB Ads Radar 竞对", "competitor": "headhomeuni", "caption": "⟢ \n分享一點我的過去\n和頭家校院的起源\n \n其實一開始\n只是把我跟朋友們的聊天錄下來\n沒想到意外地成為很多人創業的靈感來源\n\n今年我會嘗試分享更多內容\n挑戰一些過去沒碰過的題材\n如果你願意繼續看\n記得追蹤\n希望對你有幫助", "transcript": "如果當初我沒有放在這本書的話現在的我絕對還是在幫別人打工最近的時候有一個認識十幾年的大學同學跟我講他花了十年工作的時間現在釐清的一件事就是他痛恨他的工作他沒有辦法再繼續下去了我跟他唯一的差異就是我在大學的時候我讀了一本書那這本書改變了我的人生的路徑這本書呢就叫做一週工作四小時這本書在大學的時候對我來說非常的衝擊因為我那時候了解一件事我想要的這種自由的生活是沒有辦法靠領薪水達到的我得要成為一個創業的人但問題是當時沒有錢家裡也沒有人創業過甚至我自己要創什麼業我都不知道我只知道說蘇黎告訴我如果我想要過上這種自由的生活的話我得要創業所以我就帶著這個想法回到台灣開始創業在不知道賣什麼產品的時候呢我先決定的一件事就是我要讓別人看見我我開始思考我有什麼東西是值得讓別人關注的地方那再一次偶然的機會下呢我走到了Worgen辦了健身房會員那時候我驚然的發現哇台灣的健身水平落後國外非常多甚至連健身房教練都不會練於是呢那時候我就決定要拍影片來教別人怎麼健身快的我遇到了一個很大的問題OK我的中文那時候剛回到台灣爛到爆我講一支影片我可能要拍三小時那更慘的是我每次只要上傳影片的時候底下呢就會有一些酸民都在噴我說你為什麼要裝那個強調加ABCOK就是其實看了多少都會影響自己的心情OK所以那時候開始在懷疑說我自己是不是搞錯方向但是我沒有放棄我就繼續堅持下去那直到有一天我的影片呢有人幫我開始分享有人在底下留言告訴我內容對他來說的聲音有幫助那這些話其實對我來說當時是一個很大的鼓勵也讓我確定說自己走這條路是沒有錯的可是我的收入依然是零我的流量我關注可是我就是沒賺到錢所以我就開始研究我可以怎麼樣把流量變現但是我不想要靠接業配我也不想要靠微博的YouTube廣告收益我想要創造一個屬於自己的產品所以我那時候就決定說我要創一個服裝品牌叫做Tiger做一些技能的運動服飾從設計生產行銷到銷售全部都自己來這條路呢因為沒有人教嘛所以全部都自己摸索一路犯了非常多錯誤但最終我成功的把流量變現了而且在接下來七年我創造了超過1.71的營收那我發現其實很多人想要創業但百分之九九人都卡在不知道該怎麼做所以我才創辦了投價校園希望透過可以跟成功創業家的訪談中我可以把一些創業的地盛落級拆解給你看所以讓每一個想要創業的人呢可以少走彎路可以找到自己成功的模式也就是為什麼", "brk": "Hook类型: 身份共鸣  \n结构: 自我分享 → 创业启发 → 课程传授  \n为什么火: 真实经历引发共鸣，使观众感受到创业的可能性。  \n改编角度: 可通过分享成功故事和实用技巧，激励更多小红书用户探索创业路径。", "tags": "", "bait": false, "type": "Video", "likes": 25035, "comments": 87, "er": 14.21, "followers": 176834, "date": "2025-02-25", "url": "https://www.instagram.com/p/DGfgQS4TMQF/", "video": true, "ratio": 0, "score": 14.3, "status": "未处理", "x": 0.4}, {"id": "DaaznC_zvQK", "tracker": "XHS FB Ads Radar 竞对", "competitor": "ahyu.talk", "caption": "生日快樂阿爸🫵🏻\n\n雖然你碌到呢條片嘅時候，已經遲咗一日，因為你個女陪你食完生日飯之後剪唔切🤣 但都繼續祝你開開心心，健健康康！", "transcript": "今天我爸爸53歲生日他跟我說阿女 買隻鹿給我我身邊的朋友聽到可能會覺得哇 你爸爸是吸血鬼父母但你們不知道聽到他講這句話的時候我有多開心甚至開心到有點眼熟其實我從小到大都是一個幾半億的女兒讀完大學不去找工作去了網絡創業 做數位遊牧生意日有些氣息就拜拜爸爸媽媽一飛就是100天在我傳統大男人的爸爸眼中簡直是不無正業所以每次飛完一兩個月回家他從來都不會說什麼甜蜜例牌只有兩個手信呢?還有你到家酒店嗎?我一直以為他不認同我直到有次飛完幾星期回家吃飯他突然沒出一句為什麼你這條片拍到我那麼胖我才知道原來我不是在家的日子他一直有默默看我的社交平台甚至看得仔細到連自己只出現了一兩秒都捕捉到他雖然不知道什麼是網絡創業但他用自己的方式密密守護我去看這個世界的自由所以當他開口說想要一隻LOW的時候你猜他真的想要那隻BILL嗎?他在用他大男人的方式跟我說阿女你做得很好你出師了你可以成為我的依靠了我想做人仔女最奢侈的幸福從來都不是戶口多了幾多個力而是你終於有能力去承接起父母年老之後的所有任性是當他們終於敢向你伸手索取的時候你發現自己有底氣毫不猶豫這樣說一句好啊我買給你但這個53歲生日故事的結局是我們沒有買我改為想買金給他但他興高彩列走進金譜轉了一圈就拉出來說現在的金很貴你買了正傻子然後一個轉身拉進了LIKI買了幾件T恤就叫我買單走日他明明要一隻美錶一條金鏈向全世界願要他的女兒有多好但他最心痛的始終是你在外面風吹雨打賺錢不易所以原來這個老套的東西是真的世界正在乎你飛得有多高但家人會在乎你飛得累不累他今天53歲了看著他逐漸變白的頭髮還有越來越晚的報復我明白到以前總是覺得數位遊目最吸引人的地方是自由可以飛去不同地方看很美的風景但直到今天我才明白自由最溫柔的定義不過是我最愛的人慢慢變老所以我的時候我有能力地留下工作毫無估計這樣陪在他們身邊最後就是爸爸你不要再在梳化那邊滾那麼久手機你快點穿上這套新衣服跟我出去走走否則我下次拍片攻審你趕快笑", "brk": "Hook类型: 身份共鸣  \n结构: 爸爸生日 → 心理变化 → 对家庭的理解  \n为什么火: 打动了观众情感，引发共鸣与反思。  \n改编角度: 可以强调家长对孩子成长的支持与期望，结合课程分享亲情与职场的平衡。", "tags": "", "bait": false, "type": "Video", "likes": 5037, "comments": 124, "er": 9.16, "followers": 56328, "date": "2026-07-05", "url": "https://www.instagram.com/p/DaaznC_zvQK/", "video": true, "ratio": 0, "score": 9.6, "status": "未处理", "x": 0}]</script>
+<script>
+const DATA = JSON.parse(document.getElementById('data').textContent);
+const SUPA = 'https://qxyfendtvwfvmbdrfhpr.supabase.co';
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4eWZlbmR0dndmdm1iZHJmaHByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5ODk1MjYsImV4cCI6MjA5NDU2NTUyNn0.bBPmzbukNO5IgShWjbAEhRW9FOKkKxJI1hzTH-_59hk';
+document.getElementById('updated').textContent = '数据更新于 2026-07-30 00:12 (GMT+8)';
+
+const $ = id => document.getElementById(id);
+const I = n => '<svg class="ic"><use href="#i-' + n + '"/></svg>';
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : String(n);
+const getKey = () => ANON;  // anon key is baked in — safe, can only change status
+const firstLine = c => ((c || '').split('\n').map(l => l.trim()).filter(Boolean)[0] || '(无文案)');
+const byRec = {}; DATA.forEach(d => byRec[d.id] = d);
+
+function toast(msg, ok) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  t.style.borderColor = ok ? 'var(--green)' : 'var(--red)';
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ---- mission card ----
+function renderMission() {
+  const role = localStorage.getItem('tm_role') || '';
+  const name = localStorage.getItem('tm_name') || '';
+  const pend = DATA.filter(d => d.status === '未处理').length;
+  const hot = DATA.filter(d => d.status === '未处理' && (d.x || 0) >= 2).length;
+  const queue = DATA.filter(d => d.status === '拍摄中').length;
+  const done = DATA.filter(d => d.status === '已处理').length;
+  const m = $('mission');
+  if (role === 'Marketer') {
+    m.innerHTML = '<div class="mt">' + I('flame') + esc(name) + ',任务:从待挑选里选出值得拍的</div>'
+      + '<div class="md">待挑选 <b>' + pend + '</b> 条(其中真爆款 ×2+ 有 <b>' + hot + '</b> 条)'
+      + ' · 从下面清单直接选,或去雷达细看</div>';
+  } else if (role === 'Content Creator') {
+    m.innerHTML = '<div class="mt">' + I('video') + esc(name) + ',任务:清空拍摄中队列</div>'
+      + '<div class="md">队列还有 <b>' + queue + '</b> 条待做 · 已完成共 <b>' + done + '</b> 条</div>';
+  } else {
+    m.innerHTML = '<div class="mt">' + I('flame') + '团队概览</div>'
+      + '<div class="md">待挑选 <b>' + pend + '</b> 条 · 拍摄中 <b>' + queue + '</b> 条 · 已完成 <b>' + done + '</b> 条</div>';
+  }
+}
+
+function orderSections() {
+  // Marketer sees picks first; Creator sees shooting queue first
+  if ((localStorage.getItem('tm_role') || '') === 'Marketer') {
+    $('secShoot').parentNode.insertBefore($('secPick'), $('secShoot'));
+  } else {
+    $('secPick').parentNode.insertBefore($('secShoot'), $('secPick'));
+  }
+}
+
+// ---- identity ----
+function meLabel() {
+  const n = localStorage.getItem('tm_name'), r = localStorage.getItem('tm_role');
+  $('meLabel').innerHTML = n ? '<b>' + esc(n) + '</b>&nbsp;· ' + esc(r || '') : '未登记';
+}
+function showOverlay() {
+  $('oName').value = localStorage.getItem('tm_name') || '';
+  $('oRole').value = localStorage.getItem('tm_role') || 'Marketer';
+  $('overlay').classList.add('show');
+}
+$('oSave').onclick = () => {
+  const n = $('oName').value.trim();
+  if (!n) { $('oName').focus(); return; }
+  localStorage.setItem('tm_name', n);
+  localStorage.setItem('tm_role', $('oRole').value);
+  $('overlay').classList.remove('show');
+  meLabel(); orderSections(); renderMission();
+  refreshStatuses();
+};
+$('meBtn').onclick = showOverlay;
+meLabel();
+if (!localStorage.getItem('tm_name')) showOverlay();
+
+// ---- tabs ----
+document.querySelectorAll('.ntab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.ntab').forEach(x => x.classList.toggle('on', x === t));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'p-' + t.dataset.p));
+  if (t.dataset.p === 'radar' && !$('radarWrap').querySelector('iframe')) {
+    const f = document.createElement('iframe'); f.src = 'index.html'; $('radarWrap').appendChild(f);
+  }
+});
+
+// ---- status write ----
+async function setStatus(d, val) {
+  try {
+    const r = await fetch(SUPA + '/rest/v1/posts?post_id=eq.' + encodeURIComponent(d.id), {
+      method: 'PATCH',
+      headers: { 'apikey': ANON, 'Authorization': 'Bearer ' + ANON, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: val })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    d.status = val;
+    cacheStatus(d.id, val);
+    toast('✓ @' + d.competitor + ' → ' + val, true);
+  } catch (e) {
+    toast('失败: ' + e.message, false);
+  }
+  renderWork();
+}
+
+// ---- 今日工作 ----
+function pillBtn(cls, icon, label) {
+  return '<button class="pill ' + cls + '">' + I(icon) + label + '</button>';
+}
+
+function renderWork() {
+  const pend = DATA.filter(d => d.status === '未处理');
+  const shoot = DATA.filter(d => d.status === '拍摄中');
+  const done = DATA.filter(d => d.status === '已处理');
+  $('stPending').textContent = pend.length;
+  $('stShoot').textContent = shoot.length;
+  $('stDone').textContent = done.length;
+
+  // shooting queue
+  const sl = $('shootList'); sl.innerHTML = '';
+  if (!shoot.length) sl.innerHTML = '<div class="none">队列是空的 — Marketer 去爆款雷达挑几条拖进「拍摄中」</div>';
+  shoot.forEach(d => {
+    const r = document.createElement('div'); r.className = 'row';
+    r.innerHTML = '<a class="who2" href="https://www.instagram.com/' + d.competitor + '/" target="_blank">@' + esc(d.competitor) + '</a>'
+      + ((d.x || 0) >= 2 ? '<span class="xb">×' + d.x + '</span>' : '')
+      + '<span class="hookline">' + esc(firstLine(d.caption)) + '</span>'
+      + '<a class="pill" href="' + d.url + '" target="_blank">' + I('ext') + '原帖</a>'
+      + pillBtn('ok', 'check', '完成') + pillBtn('bad', 'x', '退回');
+    const btns = r.querySelectorAll('button');
+    btns[0].onclick = () => setStatus(d, '已处理');
+    btns[1].onclick = () => setStatus(d, '未处理');
+    sl.appendChild(r);
+  });
+
+  // picks
+  const picks = pend.filter(d => (d.x || 0) >= 2).sort((a, b) => (b.x || 0) - (a.x || 0)).slice(0, 8);
+  const pl = $('pickList'); pl.innerHTML = '';
+  if (!picks.length) pl.innerHTML = '<div class="none">暂时没有 ×2 以上的未处理爆款 — 等周一自动抓新数据</div>';
+  picks.forEach(d => {
+    const r = document.createElement('div'); r.className = 'row';
+    r.innerHTML = '<span class="xb">×' + d.x + '</span>'
+      + '<a class="who2" href="https://www.instagram.com/' + d.competitor + '/" target="_blank">@' + esc(d.competitor) + '</a>'
+      + '<span class="hookline">' + esc(firstLine(d.caption))
+      + '<small>🔥' + d.score + ' · ER ' + d.er + '% · 💬' + fmt(d.comments) + '</small></span>'
+      + '<a class="pill" href="' + d.url + '" target="_blank">' + I('ext') + '原帖</a>'
+      + pillBtn('ok', 'video', '选中拍摄') + pillBtn('bad', 'x', '跳过');
+    const btns = r.querySelectorAll('button');
+    btns[0].onclick = () => setStatus(d, '拍摄中');
+    btns[1].onclick = () => setStatus(d, '跳过');
+    pl.appendChild(r);
+  });
+  renderMission();
+}
+
+function applyStatusCache() {
+  try {
+    const c = JSON.parse(localStorage.getItem('st_cache') || '{}');
+    Object.keys(c).forEach(rid => { const d = byRec[rid]; if (d) d.status = c[rid]; });
+  } catch (e) {}
+}
+
+function cacheStatus(rid, val) {
+  try {
+    const c = JSON.parse(localStorage.getItem('st_cache') || '{}');
+    c[rid] = val; localStorage.setItem('st_cache', JSON.stringify(c));
+  } catch (e) {}
+}
+
+// ---- live statuses from Supabase ----
+async function refreshStatuses() {
+  applyStatusCache(); renderWork();  // last-known statuses first
+  if (Date.now() - (+localStorage.getItem('st_ts') || 0) < 600000) return;  // 10-min throttle
+  localStorage.setItem('st_ts', String(Date.now()));
+  const fresh = {};
+  try {
+    const r = await fetch(SUPA + '/rest/v1/posts?select=post_id,status', { headers: { 'apikey': ANON, 'Authorization': 'Bearer ' + ANON } });
+    if (!r.ok) return;
+    (await r.json()).forEach(row => {
+      const d = byRec[row.post_id];
+      if (d) d.status = row.status || '未处理';
+      if (row.status && row.status !== '未处理') fresh[row.post_id] = row.status;
+    });
+    localStorage.setItem('st_cache', JSON.stringify(fresh));
+    renderWork();
+  } catch (e) {}
+}
+
+orderSections();
+renderMission();
+renderWork();
+refreshStatuses();
+</script>
+</body>
+</html>
